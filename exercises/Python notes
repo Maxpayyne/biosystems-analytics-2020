@@ -1,0 +1,17 @@
+
+git pull upstream master
+
+git add maxtest.py 
+
+git commit -m "passing all tests" maxtest.py
+
+type(name)
+
+
+"""Print Report to Captain"""
+
+    args = get_args()
+    word = args.word
+    article = 'an' if word[0] in 'aeiouAEIOU' else 'a'
+
+    print('Ahoy, Captain, {} {} off the larboard bow!' .format(article, word))
