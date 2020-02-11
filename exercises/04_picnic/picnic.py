@@ -5,11 +5,6 @@ Date   : 2020-02-11
 Purpose: Rock the Casbah
 """
 
-import argparse
-import os
-import sys
-
-
 # --------------------------------------------------
 def get_args():
     """Get command-line arguments"""

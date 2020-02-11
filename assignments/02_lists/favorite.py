@@ -1,13 +1,11 @@
 #!/usr/bin/env python3
 """
-Author : root
+Author : Maxpayyne
 Date   : 2020-02-10
 Purpose: Favorite things Assignment
 """
 
 import argparse
-import os
-import sys
 
 
 # --------------------------------------------------
