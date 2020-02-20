@@ -37,8 +37,7 @@ def main():
         "Sunday": "And Sunday is the day of rest",
     }
 
-    for word in day:
-        print(week_day.get(word, f'Can\'t find "{word}"'))
+    for word in day: print(week_day.get(word, f'Can\'t find "{word}"'))
 
 
 # --------------------------------------------------
