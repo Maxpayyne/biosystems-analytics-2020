@@ -19,6 +19,7 @@ def get_args():
 
     parser.add_argument('string',
                         metavar='str',
+                        nargs='*',
                         default='You have failed me for the last time, Commander.',
                         help='The things to order')
 
