@@ -7,6 +7,8 @@ Purpose: Howler Assignment
 
 import argparse
 import os
+import sys
+import io
 
 
 # --------------------------------------------------
@@ -35,10 +37,12 @@ def main():
     """Make a jazz noise here"""
 
     args = get_args()
+    for line in args.file:
+        print(line.readline())
 
-    for fh in args.file:
-        print(fh.readline(), end ="") #if args.num > 0 else print()
-        #fh.read
+    #for fh in args.file:
+        #print(fh.readline().open(args.fiile), end ="") if args.num += 1 else print(f'--num "{args.num}" must be greater than 0')
+
 
 
 # --------------------------------------------------
