@@ -18,14 +18,17 @@ def get_args():
         formatter_class=argparse.ArgumentDefaultsHelpFormatter,
     )
 
-    parser.add_argument(
-        "file",
-        metavar="FILE",
-        help="Input File",
-        type=argparse.FileType("r"),
-        default=None,
-    )
-    parser.add_argument('-n', '--num', metavar='int', help="Number of lines", default=10)
+    parser.add_argument("file",
+                        metavar="FILE",
+                        help="Input File",
+                        type=argparse.FileType("r"),
+                        default=None)
+
+    parser.add_argument('-n',
+                        '--num',
+                        metavar='int',
+                        help="Number of lines",
+                        default=10)
 
     return parser.parse_args()
 
@@ -37,7 +40,7 @@ def main():
     args = get_args()
 
     for fh in args.file:
-        print(fh.readline(), end ="") #if args.num > 0 else print()
+        print(fh.readline(), end="")  #if args.num > 0 else print()
         #fh.read
 
 
