@@ -6,10 +6,10 @@ Purpose: Howler Assignment
 """
 
 import argparse
-import os
-
 
 # --------------------------------------------------
+
+
 def get_args():
     """Get command-line arguments"""
 
@@ -18,17 +18,20 @@ def get_args():
         formatter_class=argparse.ArgumentDefaultsHelpFormatter,
     )
 
-    parser.add_argument("file",
-                        metavar="FILE",
-                        help="Input File",
-                        type=argparse.FileType("r"),
-                        default=None)
+    parser.add_argument(
+        "file",
+        metavar="FILE",
+        help="Input File",
+        type=argparse.FileType("r"),
+        default=None,
+    )
 
-    parser.add_argument('-n',
-                        '--num',
-                        metavar='int',
-                        help="Number of lines",
-                        default=10)
+    parser.add_argument(
+        "-n", "--num", metavar="int", type=int, help="Number of lines", default=10
+    )
+    args = parser.parse_args()
+    if args.num < 1:
+        parser.error(f'--num "{args.num}" must be greater than 0')
 
     return parser.parse_args()
 
@@ -42,10 +45,9 @@ def main():
     num_lines = 0
     for line in args.file:
         num_lines += 1
+        print(line, end="")
         if num_lines == args.num:
             break
-        print(line, end='')
-
 
 
 # --------------------------------------------------
