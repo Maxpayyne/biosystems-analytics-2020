@@ -43,34 +43,29 @@ def get_args():
 
 # --------------------------------------------------
 def main():
-    """Make a jazz noise here"""
+    """The core of the Program"""
 
     args = get_args()
-    base = os.path.basename('./inputs/input1.txt')
     out_dir = args.outdir
 
-    num_files = 0
-    for fh in args.File:
+    num_files, tot_lin = 0, 0
+    for f_h in args.File:
         num_files += 1
-        out_file = os.path.join(out_dir, os.path.basename(fh.name))
-        out_fh = open(out_file, "wt")
-        num_lines = 0  # base = os.path.basename(fh.name)
-        for line in fh:
+        out_file = os.path.join(out_dir, os.path.basename(f_h.name))
+        out_f_h = open(out_file, "wt")
+        lines, num_lines = [], 0
+        for line in f_h:
             num_lines += 1
-            line.strip().replace("T", "U")
-            out_fh.write(line)  # or print(line, file=out_fh)
-        out_fh.close()
-    if num_lines == 1:
-        sequence = "sequence"
-    else:
-        sequence = "sequences"
-    if num_files == 1:
-        files = "file"
-    else:
-        files = "files"
+            lines.append(line.strip().replace("T", "U"))
+        tot_lin += num_lines
+        line_s = "\n".join(lines)  # or print(line, file=out_f_h)
+        out_f_h.write(line_s)
+        out_f_h.close()
+    sequence = "sequence" if num_lines == 1 else "sequences"
+    files = "file" if num_files == 1 else "files"
 
     print(
-        f'Done, wrote {num_lines} {sequence} in {num_files} {files} to directory "{args.outdir}".'
+        f'Done, wrote {tot_lin} {sequence} in {num_files} {files} to directory "{args.outdir}".'
     )
 
 
