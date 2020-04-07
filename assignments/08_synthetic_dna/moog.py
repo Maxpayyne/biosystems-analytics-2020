@@ -104,7 +104,7 @@ def main():
             break
     print(
         f'Done, wrote {args.numseqs} {args.seqtype.upper()} '
-        f'sequences to "{outfile.name}".'
+        f'sequence{"" if args.numseqs == 1 else "s"} to "{outfile.name}".'
     )
 
 
