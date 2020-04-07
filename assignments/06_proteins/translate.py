@@ -53,6 +53,8 @@ def main():
         out_fh.write(result.rstrip())
     print(f'Output written to \"{args.output}\".')
 
+    file=open(args.outfile, 'wt')
+
 
 
 # --------------------------------------------------
