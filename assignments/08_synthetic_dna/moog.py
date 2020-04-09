@@ -95,13 +95,17 @@ def main():
     outfile = args.outfile
 
     num = 0
-    for _ in pool:
-        num += 1
+    # for _ in pool:
+    #     num += 1
+    #     seq_len = random.randint(args.minlen, args.maxlen)
+    #     seq = "".join(random.sample(pool, seq_len))
+    #     print(f'>{num}\n{seq}', file=outfile)
+    #     if num == args.numseqs:
+    #         break
+    for i in range(args.numseqs):
         seq_len = random.randint(args.minlen, args.maxlen)
-        seq = "".join(random.sample(pool, seq_len))
-        print(f'>{num}\n{seq}', file=outfile)
-        if num == args.numseqs:
-            break
+        seq = ''.join(random.sample(pool, seq_len))
+        args.outfile.write('>{}\n{}\n'.format(i+1, seq))
     print(
         f'Done, wrote {args.numseqs} {args.seqtype.upper()} '
         f'sequence{"" if args.numseqs == 1 else "s"} to "{outfile.name}".'

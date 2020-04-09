@@ -7,6 +7,7 @@ Purpose: Maxpayyne is Programming
 
 import argparse
 import os
+import sys
 import random
 from Bio import SeqIO
 
@@ -77,14 +78,14 @@ def main():
 
         out_fh = open(out_file, "wt")
 
-        for rec in SeqIO.parse(fh, 'fasta'):
+        for rec in SeqIO.parse(fh, "fasta"):
             if random.random() <= args.pct:
                 SeqIO.write(rec, out_fh, "fasta")
                 seq += 1
         out_fh.close()
 
     print(
-        f'Wrote {seq} sequence{"" if seq == 1 else "s"} '
+        f'Wrote {seq:,} sequence{"" if seq == 1 else "s"} '
         f'from {i} file{"" if i == 1 else "s"} to '
         f'directory "{args.outdir}"'
     )
