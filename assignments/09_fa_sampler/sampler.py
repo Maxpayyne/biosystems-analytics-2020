@@ -69,20 +69,22 @@ def main():
     args = get_args()
     random.seed(args.seed)
 
+    seq = 0
     for i, fh in enumerate(args.text, start=1):
         basename = os.path.basename(fh.name)
         out_file = os.path.join(args.outdir, basename)
-        print(f"{i:3}: {fh.name}")
+        print(f"{i:3}: {basename}")
 
         out_fh = open(out_file, "wt")
-        for rec in SeqIO.parse(fh, "fasta"):
-            if random.random() == args.pct:
-                SeqIO.write(rec, out_fh, "fasta")
-                # print(rec)
 
+        for rec in SeqIO.parse(fh, 'fasta'):
+            if random.random() <= args.pct:
+                SeqIO.write(rec, out_fh, "fasta")
+                seq += 1
         out_fh.close()
+
     print(
-        f'Wrote {len(rec)} sequence{"" if len(rec) == 1 else "s"} '
+        f'Wrote {seq} sequence{"" if seq == 1 else "s"} '
         f'from {i} file{"" if i == 1 else "s"} to '
         f'directory "{args.outdir}"'
     )
