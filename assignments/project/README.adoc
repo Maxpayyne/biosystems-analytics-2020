@@ -1,29 +1,54 @@
-= Semester Project Guidelines
+= Maxwell Chibuogwu's Bio_Systems 534 Project
 
-Your project submission must include the following:
+== Finding Open Reading Frames
 
-* A novel Python program of your choosing
-* Tests for your functions and/or program (i.e., unit and integration tests)
-* A README file documenting the program, how to run it, and how to test it. This file must be in either Markdown or Asciidoctor format. A PDF version generated from the text format would be nice.
-* Any needed input files for testing or demonstration
+[square]
+* NAME
 
-You program can do anything at all, but it must respond to some form of input like command-line arguments or input data.
-That is, the program must in some way behave differently given different inputs
+     orf_finder.py -- Finding the Open Reading Frames (ORFs)
 
-* Mutate some text provided on the command line or from a file, e.g., encryption
-* Generate a song or poem
-* Play a game such Rock, Paper, Scissors
+* SYNOPSIS
 
-Your program's test must use multiple inputs to verify that your program responds correctly.
-For example, if your program uses the "ROT13" encryption to mutate input text, your tests should include more than one input value and verify that each input is encrypted correctly.
-You should review all the tests I've provided both in the `test.py` files as well as the `test_` functions that I've included in program files.
+     orf_finder.py [-h] [-s str] [-m int] [-o outfile] str
 
-You might find one of these more advanced problems inspiring:
+* DESCRIPTION
 
-    https://github.com/kyclark/more_tiny_python_projects
+     This program 'orf_finder.py' will accept a text(nucleotide) sequence (DNA or RNA) from the command line or a file with sequences. It will then look for potential Open Reading Frames and write them to a named output file in FastA format. 
+	 
+	 The program will first convert the DNA sequence to RNA. Then, the potential open reading frames would start from the Default `AUG` codon or any of the specified codons given with `-s` or `--start`. It will also accept a minimum length of ORFs that should be found.
+	 
+	 At the end, the ORFs found will be printed in FastA format to a file or to the screen if no `outfile` is given. 
 
-Here is a (Node/JS) program that sends a random joke:
+* EXIT STATUS
 
-    https://github.com/InconceivableDuck/joke-sender
+     If no ORFs are found, the program will report 'No ORFs in this sequence'.
 
-Consider writing a program to solve one of the challenges at http://rosalind.info.
+
+* The program should handle a _DNA or RNA sequence_ as a text or in a _single file_ provided as a positional argument:
+
+---
+-s| --start: CODON to start reading
+
+-m| --minlength: Minimum ORF length
+
+-o| --outfile: where to write the ORFs
+
+    $ ./orf_finder.py -h
+   usage: orf_finder.py [-h]
+
+---
+
+Given no arguments, it should print a short usage statement:
+
+----
+$ ./orf_finder.py
+usage: orf_finder.py [-h] [-s str] [-m int] [-o outfile] str
+orf_finder.py: error: the following arguments are required: str
+
+----
+The program should reject a `--minlength` argument less than 20
+
+----
+$ ./orf_finder.py input.txt -m 15
+usage: orf_finder.py [-h] [-s str] [-m int] [-o outfile] str
+orf_finder.py: error: --minlength "15" must be greater than 20.
