@@ -88,7 +88,7 @@ def main():
         result = cod__table.get(codon.upper(), '-')
         if '-' == result:
             break
-        print(''.join(result)
+        print(''.join(result))
 
 # --------------------------------------------------
 def rna(seq):
