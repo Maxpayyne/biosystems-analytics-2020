@@ -80,28 +80,32 @@ def main():
         'UAC': 'Y', 'UAU': 'Y', 'UAA': '_', 'UAG': '_',
         'UGC': 'C', 'UGU': 'C', 'UGA': '_', 'UGG': 'W',
     }
+
     new_seq = []
 
     k = 3
-    for codon in [seq[i:i + k] for i in range(0, len(seq) - k + 1, k)]:
+    for codon in [rna(seq)[i:i + k] for i in range(0, len(seq) - k + 1, k)]:
         result = cod__table.get(codon.upper(), '-')
-        print(codon)
-        print(result.rstrip())
+        if '-' == result:
+            break
+        print(''.join(result)
 
 # --------------------------------------------------
-def rna():
+def rna(seq):
     """Convert DNA to RNA"""
 
     if 'T' in args.sequence:
-        for seq in args.sequence:
-            seq.replace('T', 'U')
+        seq = ''
+        for char in args.sequence:
+            seq = char.replace('T', 'U')
 
     return seq
 
-
 # --------------------------------------------------
 def test_rna():
-    """T"""
+    """Test conversion of DNA to RNA"""
+
+    # assert
 
 
 
