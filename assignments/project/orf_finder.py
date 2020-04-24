@@ -9,6 +9,8 @@ import argparse
 import os
 import sys
 from Bio import SeqIO
+import itertools
+
 
 
 # --------------------------------------------------
@@ -60,7 +62,7 @@ def main():
     """The Core of the Program"""
 
     args = get_args()
-    seq = args.sequence
+    seq = args.sequence.replace('T', 'U')
 
     cod__table = {
         'AUA': 'I', 'AUC': 'I', 'AUU': 'I', 'AUG': 'M',
@@ -81,31 +83,27 @@ def main():
         'UGC': 'C', 'UGU': 'C', 'UGA': '_', 'UGG': 'W',
     }
 
-    new_seq = []
 
     k = 3
-    for codon in [rna(seq)[i:i + k] for i in range(0, len(seq) - k + 1, k)]:
-        result = cod__table.get(codon.upper(), '-')
-        if '-' == result:
-            break
-        print(''.join(result))
+    proteins = []
+    for codon in [seq[i:i + k] for i in range(0, len(seq) - k + 1, k)]:
+        proteins.append((cod__table.get(codon, '?')))
+    protein = ''.join(proteins)
 
-# --------------------------------------------------
-def rna(seq):
-    """Convert DNA to RNA"""
+    orf = ''
+    for amino in protein[protein.index("M"):protein.index("_")]:
+        orf += amino
+    if len(orf) >= 20:
+        print(f'>ORF 1\n{orf}')
+        print(f'Found 1 ORFs with {len(orf)} amino acids')
 
-    if 'T' in args.sequence:
-        seq = ''
-        for char in args.sequence:
-            seq = char.replace('T', 'U')
 
-    return seq
-
-# --------------------------------------------------
-def test_rna():
-    """Test conversion of DNA to RNA"""
-
-    # assert
+#
+# # --------------------------------------------------
+# def test_rna():
+#     """Test conversion of DNA to RNA"""
+#
+#     # assert
 
 
 

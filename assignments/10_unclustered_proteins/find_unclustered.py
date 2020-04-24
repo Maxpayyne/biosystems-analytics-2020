@@ -56,8 +56,8 @@ def main():
 
     clustered_ids = set()
     for line in args.cdhit:
-        if line.startswith('>'):
-            continue
+        # if line.startswith('>'):
+        #     continue
 
         match = re.search('>(\d+)', line)
         if match:
