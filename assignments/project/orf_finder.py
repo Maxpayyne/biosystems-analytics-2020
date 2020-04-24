@@ -8,9 +8,8 @@ Purpose: To find ORFs in a given sequence
 import argparse
 import os
 import sys
-from Bio import SeqIO
-import itertools
-
+# from Bio import SeqIO
+import re
 
 
 # --------------------------------------------------
@@ -37,7 +36,7 @@ def get_args():
                         help='The minimum length of an ORF',
                         metavar='int',
                         type=int,
-                        default=50)
+                        default=25)
 
     parser.add_argument('-o',
                         '--outfile',
@@ -64,7 +63,7 @@ def main():
     args = get_args()
     seq = args.sequence.replace('T', 'U')
 
-    cod__table = {
+    cod_table = {
         'AUA': 'I', 'AUC': 'I', 'AUU': 'I', 'AUG': 'M',
         'ACA': 'T', 'ACC': 'T', 'ACG': 'T', 'ACU': 'T',
         'AAC': 'N', 'AAU': 'N', 'AAA': 'K', 'AAG': 'K',
@@ -83,29 +82,47 @@ def main():
         'UGC': 'C', 'UGU': 'C', 'UGA': '_', 'UGG': 'W',
     }
 
-
     k = 3
     proteins = []
     for codon in [seq[i:i + k] for i in range(0, len(seq) - k + 1, k)]:
-        proteins.append((cod__table.get(codon, '?')))
-    protein = ''.join(proteins)
+        proteins.append((cod_table.get(codon, '?')))
+
+    orf = find_orf(proteins)
+
+
+    if len(orf) >= args.minlength:
+        print(f'>ORF 1\n{orf}')
+        print(f'Found 1 ORF with {len(orf)} amino acids')
+
+
+# --------------------------------------------------
+def find_orf(seq):
+    """Finding the ORFs in a sequence"""
 
     orf = ''
-    for amino in protein[protein.index("M"):protein.index("_")]:
-        orf += amino
-    if len(orf) >= 20:
-        print(f'>ORF 1\n{orf}')
-        print(f'Found 1 ORFs with {len(orf)} amino acids')
+    if not 'M' in seq:
+        orf = ''
+    elif 'M' and '_' in seq:
+        if seq.index('M') > seq.index('_'):
+            orf = ''
+        else:
+            for amino in seq[seq.index("M"):seq.index("_")]:
+                orf += amino
+
+    return orf
 
 
-#
-# # --------------------------------------------------
-# def test_rna():
-#     """Test conversion of DNA to RNA"""
-#
-#     # assert
+# --------------------------------------------------
+def test_find_orf():
+    assert find_orf('') == ''  # test with nothing
+    assert find_orf('_ABCM') == ''  # the _ occurs before the M
+    assert find_orf('MABC') == ''  # an M but no _
+    assert find_orf('ABC_') == ''  # an _ but no M
+    assert find_orf('MABC_') == 'MABC'  # M at the beginning
+    assert find_orf('ABMC_') == 'MC'  # M in the middle
 
 
+# --------------------------------------------------
 
 
 # --------------------------------------------------
