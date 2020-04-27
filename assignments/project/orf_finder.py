@@ -8,7 +8,6 @@ Purpose: To find ORFs in a given sequence
 import argparse
 import os
 import sys
-# from Bio import SeqIO
 import re
 
 
@@ -41,9 +40,9 @@ def get_args():
     parser.add_argument('-o',
                         '--outfile',
                         help='Output file',
-                        metavar='outfile',
-                        type=argparse.FileType('wt'),
-                        default='sys.stdout',
+                        # metavar='outfile',
+                        type=str,
+                        default='',
                         )
 
     args = parser.parse_args()
@@ -86,30 +85,31 @@ def main():
     proteins = []
     for codon in [seq[i:i + k] for i in range(0, len(seq) - k + 1, k)]:
         proteins.append((cod_table.get(codon, '?')))
+    startcod = cod_table.get(args.start)
 
-    orf = find_orf(proteins)
+    prot = ''.join(proteins)
+    # orf = find_orf(prot, startcod)
 
+    print(''.join(proteins))
+    # if len(orf) >= args.minlength:
+    #     print(f'>ORF 1\n{orf}')
+    #     print(f'Found 1 ORF with {len(orf)} amino acids')
 
-    if len(orf) >= args.minlength:
-        print(f'>ORF 1\n{orf}')
-        print(f'Found 1 ORF with {len(orf)} amino acids')
+    print(len(start_points(prot, startcod)))
+    print(start_points(prot, startcod)[0])
+    print(len(start_points(prot, '_')))
+    for ind in start_points(prot, startcod):
+        for m in start_points(prot, '_'):
+            print(''.join(prot[ind:m]))
 
 
 # --------------------------------------------------
 def find_orf(seq):
     """Finding the ORFs in a sequence"""
 
-    orf = ''
-    if not 'M' in seq:
-        orf = ''
-    elif 'M' and '_' in seq:
-        if seq.index('M') > seq.index('_'):
-            orf = ''
-        else:
-            for amino in seq[seq.index("M"):seq.index("_")]:
-                orf += amino
-
-    return orf
+    # begin = seq.index(start) if start in seq else -1
+    # end = seq.index('_') if '_' in seq else -1
+    # return ''.join(seq[begin:end]) if begin < end else ''
 
 
 # --------------------------------------------------
@@ -120,7 +120,23 @@ def test_find_orf():
     assert find_orf('ABC_') == ''  # an _ but no M
     assert find_orf('MABC_') == 'MABC'  # M at the beginning
     assert find_orf('ABMC_') == 'MC'  # M in the middle
+    assert find_orf('MCAMAMB_C_DMCAB_') == ['MCAMAMB', 'MAMB', 'MB', 'MCAB']
 
+
+# --------------------------------------------------
+def start_points(seq, start):
+    """Get starting points"""
+    start_ind = []
+    for ind in [m.start() for m in re.finditer(start, seq)]:
+        start_ind.append(ind)
+    return start_ind
+
+# --------------------------------------------------
+def test_start_points():
+    assert start_points('', 'A') == []
+    assert start_points('ABCABD', 'A') == [0, 3]
+    assert start_points('QWERTYQWERTY', 'Q') == [0, 6]
+    assert start_points('QWERTYQWERTY', 'G') == []
 
 # --------------------------------------------------
 
