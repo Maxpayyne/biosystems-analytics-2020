@@ -26,7 +26,8 @@ def test_usage():
         assert re.match("usage", out, re.IGNORECASE)
 
 # --------------------------------------------------
-def test_exists():
-    """exists"""
+def test_start_points():
+   """start point"""
+
 
 # --------------------------------------------------

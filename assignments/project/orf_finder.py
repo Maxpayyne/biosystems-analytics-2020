@@ -8,7 +8,6 @@ Purpose: To find ORFs in a given sequence
 import argparse
 import os
 import sys
-import re
 
 
 # --------------------------------------------------
@@ -40,9 +39,9 @@ def get_args():
     parser.add_argument('-o',
                         '--outfile',
                         help='Output file',
-                        # metavar='outfile',
-                        type=str,
-                        default='',
+                        metavar='outfile',
+                        type=argparse.FileType('wt'),
+                        default='out.txt',
                         )
 
     args = parser.parse_args()
@@ -88,48 +87,37 @@ def main():
     startcod = cod_table.get(args.start)
 
     prot = ''.join(proteins)
-    # orf = find_orf(prot, startcod)
+    orf = find_orf(prot, startcod)
+    orfs = sort_orf(orf)
 
-    print(''.join(proteins))
-    # if len(orf) >= args.minlength:
-    #     print(f'>ORF 1\n{orf}')
-    #     print(f'Found 1 ORF with {len(orf)} amino acids')
+    num = 0
+    for line in orfs:
+        if len(line) >= args.minlength:
+            num += 1
+            print(f'>ORF {num}\n{line}', file=args.outfile)
+            print(f'Found ORF with {len(line)} amino acids.', file=args.outfile)
 
-    print(len(start_points(prot, startcod)))
-    print(start_points(prot, startcod)[0])
-    print(len(start_points(prot, '_')))
-    for ind in start_points(prot, startcod):
-        for m in start_points(prot, '_'):
-            print(''.join(prot[ind:m]))
-
-
-# --------------------------------------------------
-def find_orf(seq):
-    """Finding the ORFs in a sequence"""
-
-    # begin = seq.index(start) if start in seq else -1
-    # end = seq.index('_') if '_' in seq else -1
-    # return ''.join(seq[begin:end]) if begin < end else ''
-
-
-# --------------------------------------------------
-def test_find_orf():
-    assert find_orf('') == ''  # test with nothing
-    assert find_orf('_ABCM') == ''  # the _ occurs before the M
-    assert find_orf('MABC') == ''  # an M but no _
-    assert find_orf('ABC_') == ''  # an _ but no M
-    assert find_orf('MABC_') == 'MABC'  # M at the beginning
-    assert find_orf('ABMC_') == 'MC'  # M in the middle
-    assert find_orf('MCAMAMB_C_DMCAB_') == ['MCAMAMB', 'MAMB', 'MB', 'MCAB']
+    if args.sequence is '':
+        print(f'There is no sequence here.')
+    elif not start_points(prot, startcod):
+        print(f'There are no start codons.')
+    elif not start_points(prot, '_'):
+        print(f'There are no stop codons.')
+    elif not sort_orf(orf):
+        print(f'There is no ORF with a start and a stop codon.')
+    else:
+        print(f'From this amino acid sequence\n{prot}\n\nI found {num} ORF{"s" if num > 1 else ""}, '
+              f'written to {args.outfile.name}.')
 
 
 # --------------------------------------------------
 def start_points(seq, start):
     """Get starting points"""
-    start_ind = []
-    for ind in [m.start() for m in re.finditer(start, seq)]:
-        start_ind.append(ind)
-    return start_ind
+    # for ind in [m.start() for m in re.finditer(start, seq)]:
+    # start_ind.append(ind)
+    # return [m.start() for m in re.finditer(start, seq)]
+    return [t[0] for t in enumerate(seq) if t[1] == start]
+
 
 # --------------------------------------------------
 def test_start_points():
@@ -138,7 +126,45 @@ def test_start_points():
     assert start_points('QWERTYQWERTY', 'Q') == [0, 6]
     assert start_points('QWERTYQWERTY', 'G') == []
 
+
 # --------------------------------------------------
+def find_orf(seq, startcod):
+    """Finding the ORFs in a sequence"""
+    starts = start_points(seq, startcod)
+    ends = start_points(seq, '_')
+
+    orfs = []
+    for start in starts:
+        for end in ends:
+            if end > start:
+                orfs.append(seq[start:end])
+
+    return orfs
+
+
+# --------------------------------------------------
+def test_find_orf():
+    assert find_orf('', '') == []  # test with nothing
+    assert find_orf('_ABCM', 'M') == []  # the _ occurs before the M
+    assert find_orf('MABC', 'M') == []  # an M but no _
+    assert find_orf('ABC_', 'M') == []  # an _ but no M
+
+
+# --------------------------------------------------
+def sort_orf(orf_sequences):
+    """Finding the ORFs in a sequence"""
+    line = []
+    for _ in orf_sequences:
+        if '_' not in _:
+            line.append(_)
+    return line
+
+
+# --------------------------------------------------
+def test_sort_orf():
+    assert sort_orf(['MABC', 'MAFG', 'MAF_G', 'MAGE']) == ['MABC', 'MAFG', 'MAGE']
+    assert sort_orf(['MABC_', 'MA_BC']) == []
+    assert sort_orf(['MCAMAMB', 'MC_AB']) == ['MCAMAMB']
 
 
 # --------------------------------------------------
