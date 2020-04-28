@@ -88,10 +88,10 @@ def main():
 
     prot = ''.join(proteins)
     orf = find_orf(prot, startcod)
-    orfs = sort_orf(orf)
+    # orfs = sort_orf(orf)
 
     num = 0
-    for line in orfs:
+    for line in sort_orf(orf):
         if len(line) >= args.minlength:
             num += 1
             print(f'>ORF {num}\n{line}', file=args.outfile)
