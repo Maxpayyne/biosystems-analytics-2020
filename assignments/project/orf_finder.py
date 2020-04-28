@@ -19,7 +19,7 @@ def get_args():
         formatter_class=argparse.ArgumentDefaultsHelpFormatter)
 
     parser.add_argument('sequence',
-                        metavar='str',
+                        metavar='DNA/RNA sequence',
                         help='Input nucleotide sequence or file')
 
     parser.add_argument('-s',
@@ -106,7 +106,7 @@ def main():
     elif not sort_orf(orf):
         print(f'There is no ORF with a start and a stop codon.')
     else:
-        print(f'From this amino acid sequence\n{prot}\n\nI found {num} ORF{"s" if num > 1 else ""}, '
+        print(f'From this amino acid sequence\n\n{prot}\n\nI found {num} ORF{"s" if num > 1 else ""}, '
               f'written to {args.outfile.name}.')
 
 
@@ -138,7 +138,6 @@ def find_orf(seq, startcod):
         for end in ends:
             if end > start:
                 orfs.append(seq[start:end])
-
     return orfs
 
 
@@ -153,11 +152,13 @@ def test_find_orf():
 # --------------------------------------------------
 def sort_orf(orf_sequences):
     """Finding the ORFs in a sequence"""
-    line = []
-    for _ in orf_sequences:
-        if '_' not in _:
-            line.append(_)
-    return line
+    # line = []
+    # for _ in orf_sequences:
+    #     if '_' not in _:
+    #         line.append(_)
+    # return line
+
+    return [line for line in orf_sequences if '_' not in line]
 
 
 # --------------------------------------------------
