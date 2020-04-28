@@ -97,7 +97,7 @@ def main():
             print(f'>ORF {num}\n{line}', file=args.outfile)
             print(f'Found ORF with {len(line)} amino acids.', file=args.outfile)
 
-    if args.sequence is '':
+    if args.sequence == '':
         print(f'There is no sequence here.')
     elif not start_points(prot, startcod):
         print(f'There are no start codons.')

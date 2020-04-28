@@ -1,5 +1,4 @@
 .PHONY: test
 
 test:
-	pytest -xv test.py
-	
+	pytest -xv --disable-pytest-warnings test.py orf_finder.py
