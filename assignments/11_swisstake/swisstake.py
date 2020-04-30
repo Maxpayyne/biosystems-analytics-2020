@@ -6,10 +6,9 @@ Purpose: Maxpayyne is Programming
 """
 
 import argparse
-import os
-import sys
-from Bio import SwissProt as sp
 from Bio import SeqIO
+
+
 # --------------------------------------------------
 def get_args():
     """Argparse: Getting command-line arguments"""
@@ -61,7 +60,7 @@ def main():
 
     num_skipped, num_taken = 0, 0
     for rec in SeqIO.parse(args.text, "swiss"):
-        annots = rec.annotation
+        annots = rec.annotations
 
         taxa = annots.get('taxonomy')
         if taxa:
@@ -70,16 +69,16 @@ def main():
                 num_skipped += 1
                 continue
 
-        keywords = annnots.get('keywords')
+        keywords = annots.get('keywords')
         if keywords:
             keywords = set(map(str.lower, keywords))
-            if wanted_kw.intersection('keywords'):
+            if wanted_kw.intersection(keywords):
                 num_taken += 1
                 SeqIO.write(rec, args.outfile, 'fasta')
             else:
                 num_skipped += 1
 
-    print(f'Done, skipped {num_skipped} and took {num_taken}. See'
+    print(f'Done, skipped {num_skipped} and took {num_taken}. See '
           f'output in "{args.outfile.name}".')
 
 
