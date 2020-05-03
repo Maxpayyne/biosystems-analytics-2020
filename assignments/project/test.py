@@ -3,11 +3,13 @@
 
 import os
 import re
+import random
 from subprocess import getstatusoutput
 
 prg = './orf_finder.py'
 input0 = './inputs/input0'
 input1 = './inputs/input1'
+
 
 
 # --------------------------------------------------
@@ -28,7 +30,17 @@ def test_usage():
 
 
 # --------------------------------------------------
-def test_0():
+def test_positional_argument():
+    """A test"""
+
+    rv, out = getstatusoutput(f'{prg}')
+    assert rv != 0
+    assert re.match('usage:', out, re.I)
+    assert re.search('the following arguments are required: DNA/RNA sequence', out)
+
+
+# --------------------------------------------------
+def test_empty_file():
     """A test"""
 
     rv, out = getstatusoutput('{} {}'.format(prg, input0))
@@ -37,10 +49,22 @@ def test_0():
 
 
 # --------------------------------------------------
-def test_1():
+def test_bad_minlength():
+    """die on bad minimum orf length"""
+
+    bad = random.randint(1, 19)
+    rv, out = getstatusoutput(f'{prg} -m {bad} {input1}')
+    assert rv != 0
+    assert re.match('usage:', out, re.I)
+    assert re.search(f'--minlength "{bad}" must be greater than 20', out)
+
+
+# --------------------------------------------------
+
+def test_good_input():
     """A test"""
 
-    out_file = 'out.txt'
+    out_file = 'out.fa'
     if os.path.isfile(out_file):
         os.remove(out_file)
 
@@ -50,7 +74,7 @@ def test_1():
         expected = '\n'.join([
             'From this amino acid sequence', '',
             'NFCAKPESMVASLNDGCCNAPSSSLRSVHANPGRGSAACRARSAR_QASVRSVGAEVSAQDSRVDRAVRSRHPRGPGCSTGSLHQGLPCAWQFPRRQCV?YLAVPHRHQHGEELPGVPWKTAARQRCQLRGCGV?RRRSWPQGSRVPRALVVAG_NRRMCPSHHPATAQRPTHGLDPA_VRRAE?RRHCQCHAMSGGYRALSNLPRSGGHRQSPATFAAGN_',
-            '', 'I found 2 ORFs, written to out.txt.'
+            '', 'I found 2 ORFs, written to "out.fa".'
         ])
         assert out.strip() == expected
 
